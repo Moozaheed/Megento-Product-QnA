@@ -2,10 +2,10 @@
 
 A comprehensive Product Questions & Answers module for Magento 2 that allows customers to ask questions about products and administrators to provide answers.
 
-## � Screenshots
+## 📸 Screenshots
 
 ### Admin Side View
-![Admin Grid View](Images/Magento-Admin-Side-View)
+![Admin Grid View](Images/Magento-Admin-Side-View.png)
 
 ### Admin Dashboard
 ![Admin Question Management](Images/Megento-QnA-Dashboard.png)
