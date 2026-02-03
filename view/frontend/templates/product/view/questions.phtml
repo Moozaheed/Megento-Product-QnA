@@ -1,0 +1,615 @@
+<?php
+/**
+ * Copyright © Vendor. All rights reserved.
+ * @var \Vendor\ProductQnA\Block\Product\View\Questions $block
+ */
+$product = $block->getProduct();
+if (!$product || !$product->getId()) {
+    return;
+}
+
+$questions = $block->getQuestions();
+$questionCount = $block->getQuestionCount();
+?>
+
+<div class="product-qna-wrapper" id="product-qna-tab">
+    <div class="qna-header">
+        <h2 class="qna-title">
+            <?= $block->escapeHtml(__('Questions & Answers')) ?>
+            <span class="qna-count">(<?= (int)$questionCount ?>)</span>
+        </h2>
+        <button type="button" 
+                class="action primary ask-question-btn"
+                onclick="openQuestionModal()">
+            <?= $block->escapeHtml(__('Ask a Question')) ?>
+        </button>
+    </div>
+
+    <?php if ($questionCount > 0): ?>
+        <div class="qna-list">
+            <?php foreach ($questions as $question): ?>
+                <div class="qna-item" data-question-id="<?= (int)$question->getQuestionId() ?>">
+                    <div class="question-wrapper">
+                        <div class="question-icon">Q</div>
+                        <div class="question-content">
+                            <div class="question-text">
+                                <?= $block->escapeHtml($question->getQuestionText()) ?>
+                            </div>
+                            <div class="question-meta">
+                                <span class="question-author">
+                                    <?= $block->escapeHtml(__('By %1', $question->getCustomerName())) ?>
+                                </span>
+                                <span class="question-date">
+                                    <?= $block->escapeHtml($block->formatQuestionDate($question->getCreatedAt())) ?>
+                                </span>
+                                <?php if ($question->getHelpfulCount() > 0): ?>
+                                    <span class="question-helpful">
+                                        <?= $block->escapeHtml(__('%1 found this helpful', $question->getHelpfulCount())) ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                    $answers = $block->getAnswers((int)$question->getQuestionId());
+                    if ($answers->getSize() > 0):
+                    ?>
+                        <div class="answers-wrapper">
+                            <?php foreach ($answers as $answer): ?>
+                                <div class="answer-item">
+                                    <div class="answer-icon">A</div>
+                                    <div class="answer-content">
+                                        <div class="answer-text">
+                                            <?= $block->escapeHtml($answer->getAnswerText()) ?>
+                                        </div>
+                                        <div class="answer-meta">
+                                            <span class="answer-badge"><?= $block->escapeHtml(__('Store Answer')) ?></span>
+                                            <span class="answer-author">
+                                                <?= $block->escapeHtml(__('Answered by %1', $block->getAdminUserName($answer->getAdminUserId()))) ?>
+                                            </span>
+                                            <span class="answer-date">
+                                                <?= $block->escapeHtml($block->formatQuestionDate($answer->getCreatedAt())) ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <div class="qna-empty">
+            <p><?= $block->escapeHtml(__('No questions yet. Be the first to ask!')) ?></p>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Question Modal -->
+<div id="question-modal" class="qna-modal" style="display: none;">
+    <div class="qna-modal-content">
+        <div class="qna-modal-header">
+            <h2><?= $block->escapeHtml(__('Ask a Question')) ?></h2>
+            <button type="button" class="qna-modal-close" onclick="closeQuestionModal()">&times;</button>
+        </div>
+        
+        <form id="question-form" class="qna-form" onsubmit="submitQuestion(event)">
+            <?= $block->getBlockHtml('formkey') ?>
+            <input type="hidden" name="product_id" value="<?= (int)$product->getId() ?>" />
+            
+            <div class="qna-form-group">
+                <label for="question_text" class="qna-label">
+                    <?= $block->escapeHtml(__('Your Question')) ?> <span class="required">*</span>
+                </label>
+                <textarea 
+                    name="question_text" 
+                    id="question_text" 
+                    class="qna-input qna-textarea" 
+                    rows="4" 
+                    required
+                    placeholder="<?= $block->escapeHtml(__('What would you like to know about this product?')) ?>"></textarea>
+            </div>
+
+            <div class="qna-form-group">
+                <label for="customer_name" class="qna-label">
+                    <?= $block->escapeHtml(__('Your Name')) ?> <span class="required">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    name="customer_name" 
+                    id="customer_name" 
+                    class="qna-input" 
+                    required
+                    placeholder="<?= $block->escapeHtml(__('Enter your name')) ?>" />
+            </div>
+
+            <div class="qna-form-group">
+                <label for="customer_email" class="qna-label">
+                    <?= $block->escapeHtml(__('Your Email')) ?> <span class="required">*</span>
+                </label>
+                <input 
+                    type="email" 
+                    name="customer_email" 
+                    id="customer_email" 
+                    class="qna-input" 
+                    required
+                    placeholder="<?= $block->escapeHtml(__('your@email.com')) ?>" />
+            </div>
+
+            <div class="qna-form-notice">
+                <p><?= $block->escapeHtml(__('Your question will be reviewed by our team before being published.')) ?></p>
+            </div>
+
+            <div class="qna-form-actions">
+                <button type="submit" class="qna-btn qna-btn-primary">
+                    <?= $block->escapeHtml(__('Submit Question')) ?>
+                </button>
+                <button type="button" class="qna-btn qna-btn-secondary" onclick="closeQuestionModal()">
+                    <?= $block->escapeHtml(__('Cancel')) ?>
+                </button>
+            </div>
+
+            <div id="qna-form-message" class="qna-message" style="display: none;"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+require(['jquery'], function($) {
+    window.openQuestionModal = function() {
+        $('#question-modal').css('display', 'flex');
+        $('body').css('overflow', 'hidden');
+    };
+
+    window.closeQuestionModal = function() {
+        $('#question-modal').css('display', 'none');
+        $('body').css('overflow', 'auto');
+        $('#question-form')[0].reset();
+        $('#qna-form-message').hide();
+    };
+
+    window.submitQuestion = function(event) {
+        event.preventDefault();
+        
+        var form = $(event.target);
+        var formData = new FormData(form[0]);
+        var messageDiv = $('#qna-form-message');
+        var submitBtn = form.find('button[type="submit"]');
+        
+        // Disable submit button
+        submitBtn.prop('disabled', true).text('<?= $block->escapeJs(__('Submitting...')) ?>');
+        
+        // Send AJAX request
+        $.ajax({
+            url: '<?= $block->escapeUrl($block->getUrl('productqna/question/save')) ?>',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(data) {
+                messageDiv.show();
+                
+                if (data.success) {
+                    messageDiv.removeClass('qna-message-error').addClass('qna-message-success');
+                    messageDiv.text(data.message || '<?= $block->escapeJs(__('Your question has been submitted successfully!')) ?>');
+                    
+                    // Clear form
+                    form[0].reset();
+                    
+                    // Close modal after 2 seconds and reload
+                    setTimeout(function() {
+                        closeQuestionModal();
+                        location.reload();
+                    }, 2000);
+                } else {
+                    messageDiv.removeClass('qna-message-success').addClass('qna-message-error');
+                    messageDiv.text(data.message || '<?= $block->escapeJs(__('Unable to submit question. Please try again.')) ?>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                messageDiv.show();
+                messageDiv.removeClass('qna-message-success').addClass('qna-message-error');
+                messageDiv.text('<?= $block->escapeJs(__('An error occurred. Please try again.')) ?>');
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).text('<?= $block->escapeJs(__('Submit Question')) ?>');
+            }
+        });
+    };
+
+    // Close modal when clicking outside
+    $(document).on('click', function(event) {
+        if ($(event.target).is('#question-modal')) {
+            closeQuestionModal();
+        }
+    });
+});
+</script>
+
+<style>
+.product-qna-wrapper {
+    margin: 20px 0;
+}
+
+.qna-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.qna-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.qna-count {
+    color: #666;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+.ask-question-btn {
+    padding: 10px 20px;
+    background: #1979c3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.ask-question-btn:hover {
+    background: #006bb4;
+}
+
+.qna-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.qna-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fff;
+}
+
+.question-wrapper {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.question-icon {
+    width: 40px;
+    height: 40px;
+    background: #1979c3;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.question-content {
+    flex: 1;
+}
+
+.question-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.question-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #666;
+    flex-wrap: wrap;
+}
+
+.question-author {
+    font-weight: 500;
+}
+
+.question-helpful {
+    color: #1979c3;
+}
+
+.answers-wrapper {
+    margin-left: 55px;
+    padding-left: 20px;
+    border-left: 3px solid #f0f0f0;
+}
+
+.answer-item {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+
+.answer-icon {
+    width: 36px;
+    height: 36px;
+    background: #5cb85c;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.answer-content {
+    flex: 1;
+}
+
+.answer-text {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.answer-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #666;
+    align-items: center;
+}
+
+.answer-badge {
+    background: #5cb85c;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.qna-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .qna-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .ask-question-btn {
+        width: 100%;
+    }
+
+    .answers-wrapper {
+        margin-left: 0;
+        padding-left: 15px;
+    }
+
+    .qna-modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+}
+
+/* Modal Styles */
+.qna-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.qna-modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.qna-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid #e0e0e0;
+    background: #f9f9f9;
+    border-radius: 8px 8px 0 0;
+}
+
+.qna-modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+}
+
+.qna-modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #666;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.qna-modal-close:hover {
+    color: #000;
+}
+
+.qna-form {
+    padding: 25px;
+}
+
+.qna-form-group {
+    margin-bottom: 20px;
+}
+
+.qna-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.qna-label .required {
+    color: #e02b27;
+    font-weight: bold;
+}
+
+.qna-input,
+.qna-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.qna-input:focus,
+.qna-textarea:focus {
+    outline: none;
+    border-color: #1979c3;
+    box-shadow: 0 0 0 3px rgba(25, 121, 195, 0.1);
+}
+
+.qna-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.qna-form-notice {
+    background: #f0f8ff;
+    border-left: 4px solid #1979c3;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.qna-form-notice p {
+    margin: 0;
+    font-size: 13px;
+    color: #555;
+}
+
+.qna-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.qna-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.qna-btn-primary {
+    background: #1979c3;
+    color: #fff;
+    flex: 1;
+}
+
+.qna-btn-primary:hover:not(:disabled) {
+    background: #006bb4;
+}
+
+.qna-btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.qna-btn-secondary {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.qna-btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.qna-message {
+    margin-top: 15px;
+    padding: 12px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.qna-message-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.qna-message-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+</style>

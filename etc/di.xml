@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vendor. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Preferences for API Data Interfaces -->
+    <preference for="Vendor\ProductQnA\Api\Data\QuestionInterface" type="Vendor\ProductQnA\Model\Question"/>
+    <preference for="Vendor\ProductQnA\Api\Data\AnswerInterface" type="Vendor\ProductQnA\Model\Answer"/>
+    
+    <!-- UI Component Data Provider -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="productqna_question_listing_data_source" xsi:type="string">Vendor\ProductQnA\Model\ResourceModel\Question\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    
+    <type name="Vendor\ProductQnA\Model\ResourceModel\Question\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">vendor_product_qna_question</argument>
+            <argument name="resourceModel" xsi:type="string">Vendor\ProductQnA\Model\ResourceModel\Question</argument>
+        </arguments>
+    </type>
+</config>

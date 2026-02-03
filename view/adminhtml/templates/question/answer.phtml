@@ -1,0 +1,200 @@
+<?php
+/**
+ * Copyright © Vendor. All rights reserved.
+ * @var \Vendor\ProductQnA\Block\Adminhtml\Question\Answer $block
+ */
+$question = $block->getQuestion();
+$product = $block->getProduct();
+$answers = $block->getAnswers();
+$latestAnswer = $answers->getSize() > 0 ? $answers->getFirstItem() : null;
+
+if (!$question) {
+    echo '<div class="message error">' . __('Question not found.') . '</div>';
+    return;
+}
+?>
+
+<div class="answer-form-container">
+    <div class="page-actions">
+        <a href="<?= $block->escapeUrl($block->getBackUrl()) ?>" class="action-back">
+            <span><?= $block->escapeHtml(__('Back to Questions')) ?></span>
+        </a>
+    </div>
+
+    <div class="question-details">
+        <h2><?= $block->escapeHtml(__('Question Details')) ?></h2>
+        
+        <?php if ($product): ?>
+        <div class="field">
+            <strong><?= $block->escapeHtml(__('Product:')) ?></strong>
+            <?= $block->escapeHtml($product->getName()) ?> (ID: <?= (int)$product->getId() ?>)
+        </div>
+        <?php endif; ?>
+        
+        <div class="field">
+            <strong><?= $block->escapeHtml(__('Customer:')) ?></strong>
+            <?= $block->escapeHtml($question->getCustomerName()) ?> (<?= $block->escapeHtml($question->getCustomerEmail()) ?>)
+        </div>
+        
+        <div class="field">
+            <strong><?= $block->escapeHtml(__('Asked on:')) ?></strong>
+            <?= $block->escapeHtml($block->formatDate($question->getCreatedAt())) ?>
+        </div>
+        
+        <div class="field question-text">
+            <strong><?= $block->escapeHtml(__('Question:')) ?></strong>
+            <p><?= $block->escapeHtml($question->getQuestionText()) ?></p>
+        </div>
+    </div>
+
+    <?php if ($answers->getSize() > 0): ?>
+    <div class="existing-answers">
+        <h2><?= $block->escapeHtml(__('Existing Answers')) ?></h2>
+        <?php foreach ($answers as $answer): ?>
+        <div class="answer-item">
+            <div class="answer-meta">
+                <strong><?= $block->escapeHtml($block->getAdminUserName($answer->getAdminUserId())) ?></strong>
+                <span class="answer-date"><?= $block->escapeHtml($block->formatDate($answer->getCreatedAt())) ?></span>
+            </div>
+            <div class="answer-text">
+                <?= $block->escapeHtml($answer->getAnswerText()) ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+    <div class="answer-form">
+        <h2><?= $block->escapeHtml($latestAnswer ? __('Edit Your Answer') : __('Add Your Answer')) ?></h2>
+        
+        <form action="<?= $block->escapeUrl($block->getUrl('*/*/editAnswer')) ?>" method="post" id="answer-form">
+            <?= $block->getBlockHtml('formkey') ?>
+            <input type="hidden" name="question_id" value="<?= (int)$question->getQuestionId() ?>" />
+            <?php if ($latestAnswer): ?>
+            <input type="hidden" name="answer_id" value="<?= (int)$latestAnswer->getAnswerId() ?>" />
+            <?php endif; ?>
+            
+            <fieldset class="admin__fieldset">
+                <div class="admin__field admin__field-wide required">
+                    <label class="admin__field-label" for="answer_text">
+                        <span><?= $block->escapeHtml(__('Your Answer')) ?></span>
+                    </label>
+                    <div class="admin__field-control">
+                        <textarea 
+                            name="answer_text" 
+                            id="answer_text" 
+                            class="admin__control-textarea" 
+                            rows="6" 
+                            required
+                            placeholder="<?= $block->escapeHtml(__('Enter your answer here...')) ?>"><?= $latestAnswer ? $block->escapeHtml($latestAnswer->getAnswerText()) : '' ?></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="page-actions">
+                <button type="submit" class="action-primary">
+                    <span><?= $block->escapeHtml($latestAnswer ? __('Update Answer') : __('Submit Answer')) ?></span>
+                </button>
+                <a href="<?= $block->escapeUrl($block->getBackUrl()) ?>" class="action-secondary">
+                    <span><?= $block->escapeHtml(__('Cancel')) ?></span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.answer-form-container {
+    padding: 20px;
+}
+
+.question-details {
+    background: #f5f5f5;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 4px;
+}
+
+.question-details .field {
+    margin-bottom: 15px;
+}
+
+.question-text p {
+    margin: 10px 0 0 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.existing-answers {
+    margin-bottom: 30px;
+}
+
+.answer-item {
+    background: #fff;
+    border-left: 4px solid #5cb85c;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.answer-meta {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.answer-meta strong {
+    color: #333;
+}
+
+.answer-date {
+    color: #666;
+    margin-left: 10px;
+}
+
+.answer-text {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.answer-form h2 {
+    margin-bottom: 20px;
+}
+
+.page-actions {
+    margin-bottom: 20px;
+}
+
+.action-primary,
+.action-secondary,
+.action-back {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-primary {
+    background: #eb5202;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+}
+
+.action-primary:hover {
+    background: #d14702;
+}
+
+.action-secondary,
+.action-back {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.action-secondary:hover,
+.action-back:hover {
+    background: #e0e0e0;
+}
+</style>

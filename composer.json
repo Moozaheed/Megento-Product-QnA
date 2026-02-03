@@ -1,0 +1,38 @@
+{
+    "name": "vendor/magento2-productqna",
+    "description": "Product Questions & Answers module for Magento 2 - Allow customers to ask questions on product pages and admins to provide answers",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vendor",
+            "email": "support@vendor.com"
+        }
+    ],
+    "keywords": [
+        "magento2",
+        "magento",
+        "product questions",
+        "questions and answers",
+        "q&a",
+        "product qa",
+        "customer questions",
+        "faq"
+    ],
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0",
+        "magento/framework": ">=103.0",
+        "magento/module-catalog": ">=104.0",
+        "magento/module-customer": ">=103.0",
+        "magento/module-backend": ">=102.0"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Vendor\\ProductQnA\\": ""
+        }
+    }
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vendor. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Vendor_ProductQnA::productqna" title="Product Q&amp;A" module="Vendor_ProductQnA" sortOrder="60" resource="Vendor_ProductQnA::productqna"/>
+        <add id="Vendor_ProductQnA::questions" title="Manage Questions" module="Vendor_ProductQnA" sortOrder="10" parent="Vendor_ProductQnA::productqna" action="productqna/question/index" resource="Vendor_ProductQnA::questions"/>
+    </menu>
+</config>
