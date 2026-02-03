@@ -377,12 +377,6 @@ For issues, questions, or contributions, please contact:
 4. Push to the branch
 5. Create a Pull Request
 
-## 📞 Support
-
-For issues and questions:
-- GitHub Issues: https://github.com/yourusername/magento2-productqna/issues
-- Email: support@yourcompany.com
-
 ## 🙏 Credits
 
 Built with Magento 2 best practices and standards.
