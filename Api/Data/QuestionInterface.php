@@ -4,7 +4,7 @@
  */
 declare(strict_types=1);
 
-namespace Vendor\ \Api\Data;
+namespace Vendor\ProductQnA\Api\Data;
 
 /**
  * Question interface
