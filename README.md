@@ -359,13 +359,15 @@ php bin/magento cache:flush
 - Check if questions exist with status "Approved" or "Answered"
 - Check browser console for JavaScript errors
 
-## 📝 License
+## � Author
 
-Proprietary - Customize as needed
+**G. M. Mozahed**  
+Software Engineer at Brain Station 23
 
-## 👥 Author
+## 🤝 Support
 
-Vendor - Your Company Name
+For issues, questions, or contributions, please contact:  
+📧 Email: giyasmahmudmozahed@gmail.com
 
 ## 🤝 Contributing
 
