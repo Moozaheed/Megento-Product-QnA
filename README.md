@@ -4,11 +4,11 @@ A comprehensive Product Questions & Answers module for Magento 2 that allows cus
 
 ## � Screenshots
 
-### Admin Dashboard
-![Admin Question Management](Images/Megento-QnA-Dashboard.png)
-
 ### Admin Side View
 ![Admin Grid View](Images/Magento-Admin-Side-View)
+
+### Admin Dashboard
+![Admin Question Management](Images/Megento-QnA-Dashboard.png)
 
 ### Frontend - Product Page
 ![Questions on Product Page](Images/View%20In%20UI.png)
