@@ -15,6 +15,8 @@ use Vendor\ProductQnA\Model\QuestionFactory;
 use Vendor\ProductQnA\Model\ResourceModel\Question as QuestionResource;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Vendor\ProductQnA\Service\AiAnswerService;
+use Psr\Log\LoggerInterface;
 
 /**
  * Save question
@@ -62,6 +64,16 @@ class Save implements HttpPostActionInterface
     private $productRepository;
 
     /**
+     * @var AiAnswerService
+     */
+    private $aiAnswerService;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param RequestInterface $request
      * @param RedirectFactory $redirectFactory
      * @param JsonFactory $jsonFactory
@@ -70,6 +82,8 @@ class Save implements HttpPostActionInterface
      * @param QuestionResource $questionResource
      * @param CustomerSession $customerSession
      * @param ProductRepositoryInterface $productRepository
+     * @param AiAnswerService $aiAnswerService
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RequestInterface $request,
@@ -79,7 +93,9 @@ class Save implements HttpPostActionInterface
         QuestionFactory $questionFactory,
         QuestionResource $questionResource,
         CustomerSession $customerSession,
-        ProductRepositoryInterface $productRepository
+        ProductRepositoryInterface $productRepository,
+        AiAnswerService $aiAnswerService,
+        LoggerInterface $logger
     ) {
         $this->request = $request;
         $this->redirectFactory = $redirectFactory;
@@ -89,6 +105,8 @@ class Save implements HttpPostActionInterface
         $this->questionResource = $questionResource;
         $this->customerSession = $customerSession;
         $this->productRepository = $productRepository;
+        $this->aiAnswerService = $aiAnswerService;
+        $this->logger = $logger;
     }
 
     /**
@@ -104,6 +122,7 @@ class Save implements HttpPostActionInterface
         $questionText = trim($this->request->getParam('question_text', ''));
         $customerName = trim($this->request->getParam('customer_name', ''));
         $customerEmail = trim($this->request->getParam('customer_email', ''));
+        $answerPreference = $this->request->getParam('answer_preference', 'admin');
 
         if (!$productId || !$questionText || !$customerName || !$customerEmail) {
             if ($isAjax) {
@@ -126,30 +145,55 @@ class Save implements HttpPostActionInterface
             $question->setQuestionText($questionText);
             $question->setCustomerName($customerName);
             $question->setCustomerEmail($customerEmail);
+            $question->setAnswerPreference($answerPreference);
             
             // Set customer ID if logged in
             if ($this->customerSession->isLoggedIn()) {
                 $question->setCustomerId($this->customerSession->getCustomerId());
             }
             
-            // Set status to pending (0) for admin approval
-            $question->setStatus(0);
+            // Auto-approve if AI preference, otherwise pending
+            if ($answerPreference === 'ai') {
+                // Status 1 = Approved (ready for AI to process)
+                $question->setStatus(1);
+            } else {
+                // Status 0 = Pending (waiting for admin approval)
+                $question->setStatus(0);
+            }
+            
             $question->setVisibility(1);
             $question->setHelpfulCount(0);
             
             $this->questionResource->save($question);
             
+            // Trigger AI answer generation if preference is 'ai'
+            if ($answerPreference === 'ai') {
+                try {
+                    $this->logger->info('Triggering AI answer generation for question: ' . $question->getQuestionId());
+                    $this->aiAnswerService->processQuestion((int)$question->getQuestionId());
+                } catch (\Exception $e) {
+                    $this->logger->error('Error triggering AI answer generation: ' . $e->getMessage());
+                    // Don't fail the whole request if AI fails
+                }
+            }
+            
             if ($isAjax) {
                 $result = $this->jsonFactory->create();
+                $message = $answerPreference === 'ai' 
+                    ? __('Your question has been submitted! AI is generating an answer...')
+                    : __('Your question has been submitted and will be reviewed by our team.');
+                    
                 return $result->setData([
                     'success' => true,
-                    'message' => __('Your question has been submitted and will be reviewed by our team.')
+                    'message' => $message
                 ]);
             }
             
-            $this->messageManager->addSuccessMessage(
-                __('Your question has been submitted and will be reviewed by our team.')
-            );
+            $successMessage = $answerPreference === 'ai'
+                ? __('Your question has been submitted! AI is generating an answer...')
+                : __('Your question has been submitted and will be reviewed by our team.');
+                
+            $this->messageManager->addSuccessMessage($successMessage);
             
             $resultRedirect = $this->redirectFactory->create();
             return $resultRedirect->setPath('catalog/product/view', ['id' => $productId]);

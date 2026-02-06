@@ -16,3 +16,9 @@ Thumbs.db
 *.tmp
 *.bak
 *.cache
+
+# AI Service
+ai-service/node_modules/
+ai-service/models/
+ai-service/.env
+ai-service/package-lock.json

@@ -14,6 +14,8 @@ interface AnswerInterface
     const ANSWER_ID = 'answer_id';
     const QUESTION_ID = 'question_id';
     const ADMIN_USER_ID = 'admin_user_id';
+    const IS_AI_GENERATED = 'is_ai_generated';
+    const AI_ANSWER_ID = 'ai_answer_id';
     const ANSWER_TEXT = 'answer_text';
     const STATUS = 'status';
     const CREATED_AT = 'created_at';
@@ -126,4 +128,34 @@ interface AnswerInterface
      * @return $this
      */
     public function setUpdatedAt(string $updatedAt): self;
+
+    /**
+     * Get is AI generated
+     *
+     * @return int
+     */
+    public function getIsAiGenerated(): int;
+
+    /**
+     * Set is AI generated
+     *
+     * @param int $isAiGenerated
+     * @return $this
+     */
+    public function setIsAiGenerated(int $isAiGenerated): self;
+
+    /**
+     * Get AI Answer ID
+     *
+     * @return int|null
+     */
+    public function getAiAnswerId(): ?int;
+
+    /**
+     * Set AI Answer ID
+     *
+     * @param int|null $aiAnswerId
+     * @return $this
+     */
+    public function setAiAnswerId(?int $aiAnswerId): self;
 }

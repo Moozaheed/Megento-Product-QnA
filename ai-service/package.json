@@ -1,0 +1,28 @@
+{
+  "name": "productqna-ai-service",
+  "version": "2.0.0",
+  "description": "AI Service for Magento Product Q&A using Transformers.js with WebGPU",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "transformers",
+    "webgpu",
+    "ai",
+    "qwen",
+    "magento"
+  ],
+  "author": "G. M. Mozahed",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "@xenova/transformers": "^2.17.0",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

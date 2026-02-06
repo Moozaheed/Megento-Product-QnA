@@ -20,6 +20,7 @@ interface QuestionInterface
     const STATUS = 'status';
     const HELPFUL_COUNT = 'helpful_count';
     const VISIBILITY = 'visibility';
+    const ANSWER_PREFERENCE = 'answer_preference';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -31,6 +32,9 @@ interface QuestionInterface
 
     const VISIBILITY_PUBLIC = 1;
     const VISIBILITY_PRIVATE = 0;
+    
+    const PREFERENCE_AI = 'ai';
+    const PREFERENCE_ADMIN = 'admin';
 
     /**
      * Get question ID
@@ -196,4 +200,19 @@ interface QuestionInterface
      * @return $this
      */
     public function setUpdatedAt(string $updatedAt): self;
+
+    /**
+     * Get answer preference
+     *
+     * @return string
+     */
+    public function getAnswerPreference(): string;
+
+    /**
+     * Set answer preference
+     *
+     * @param string $preference
+     * @return $this
+     */
+    public function setAnswerPreference(string $preference): self;
 }

@@ -29,6 +29,8 @@
                 default="0" comment="Helpful Count"/>
         <column xsi:type="smallint" name="visibility" unsigned="true" nullable="false" 
                 default="1" comment="Visibility: 1=Public, 0=Hidden"/>
+        <column xsi:type="varchar" name="answer_preference" nullable="false" length="10" 
+                default="admin" comment="Answer Preference: ai or admin"/>
         <column xsi:type="timestamp" name="created_at" nullable="false" 
                 default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" nullable="false" 
@@ -60,6 +62,9 @@
         <index referenceId="IDX_CREATED" indexType="btree">
             <column name="created_at"/>
         </index>
+        <index referenceId="IDX_ANSWER_PREFERENCE" indexType="btree">
+            <column name="answer_preference"/>
+        </index>
     </table>
     
     <!-- Answers Table -->
@@ -71,6 +76,10 @@
                 comment="Question ID"/>
         <column xsi:type="int" name="admin_user_id" unsigned="true" nullable="true" 
                 comment="Admin User ID"/>
+        <column xsi:type="smallint" name="is_ai_generated" unsigned="true" nullable="false" 
+                default="0" comment="Is AI Generated: 0=No, 1=Yes"/>
+        <column xsi:type="int" name="ai_answer_id" unsigned="true" nullable="true" 
+                comment="AI Answer ID Reference"/>
         <column xsi:type="text" name="answer_text" nullable="false" 
                 comment="Answer Text"/>
         <column xsi:type="smallint" name="status" unsigned="true" nullable="false" 
@@ -132,6 +141,44 @@
         
         <index referenceId="IDX_QUESTION" indexType="btree">
             <column name="question_id"/>
+        </index>
+    </table>
+    
+    <!-- AI Answers Table -->
+    <table name="vendor_product_qna_ai_answer" resource="default" engine="innodb" 
+           comment="AI Generated Answers Table">
+        <column xsi:type="int" name="ai_answer_id" unsigned="true" nullable="false" 
+                identity="true" comment="AI Answer ID"/>
+        <column xsi:type="int" name="question_id" unsigned="true" nullable="false" 
+                comment="Question ID"/>
+        <column xsi:type="varchar" name="ai_model_name" nullable="false" length="100" 
+                default="Qwen/Qwen2.5-3B-Instruct" comment="AI Model Name"/>
+        <column xsi:type="text" name="ai_answer_text" nullable="false" 
+                comment="AI Generated Answer Text"/>
+        <column xsi:type="int" name="processing_time_ms" unsigned="false" nullable="true" 
+                comment="Processing Time in Milliseconds"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" 
+                default="0" comment="Status: 0=Generated, 1=Published"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false" 
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" 
+                default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
+        
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="ai_answer_id"/>
+        </constraint>
+        
+        <constraint xsi:type="foreign" referenceId="FK_QNA_AI_ANSWER_QUESTION"
+                    table="vendor_product_qna_ai_answer" column="question_id"
+                    referenceTable="vendor_product_qna_question" referenceColumn="question_id"
+                    onDelete="CASCADE"/>
+        
+        <constraint xsi:type="unique" referenceId="UNQ_AI_ANSWER_QUESTION_ID">
+            <column name="question_id"/>
+        </constraint>
+        
+        <index referenceId="IDX_AI_STATUS" indexType="btree">
+            <column name="status"/>
         </index>
     </table>
 </schema>

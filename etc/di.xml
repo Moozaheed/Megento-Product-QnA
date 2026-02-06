@@ -24,4 +24,13 @@
             <argument name="resourceModel" xsi:type="string">Vendor\ProductQnA\Model\ResourceModel\Question</argument>
         </arguments>
     </type>
+    
+    <!-- Console Commands -->
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="productqna_retry_ai" xsi:type="object">Vendor\ProductQnA\Console\Command\RetryAiAnswers</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

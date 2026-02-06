@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vendor. All rights reserved.
+ * Default Configuration Values
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <productqna>
+            <ai>
+                <enabled>1</enabled>
+                <service_url>http://172.23.0.1:3000</service_url>
+                <timeout>30</timeout>
+            </ai>
+        </productqna>
+    </default>
+</config>

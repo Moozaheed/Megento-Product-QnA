@@ -198,4 +198,20 @@ class Question extends AbstractModel implements QuestionInterface
     {
         return $this->setData(self::UPDATED_AT, $updatedAt);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAnswerPreference(): string
+    {
+        return (string)$this->getData(self::ANSWER_PREFERENCE);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAnswerPreference(string $preference): QuestionInterface
+    {
+        return $this->setData(self::ANSWER_PREFERENCE, $preference);
+    }
 }

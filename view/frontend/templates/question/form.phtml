@@ -47,6 +47,41 @@ if (!$product) {
                 </div>
             </div>
 
+            <div class="field answer-preference required">
+                <label class="label">
+                    <span><?= $block->escapeHtml(__('Who should answer your question?')) ?></span>
+                </label>
+                <div class="control answer-preference-options">
+                    <div class="preference-option">
+                        <input type="radio" 
+                               name="answer_preference" 
+                               id="preference_ai" 
+                               value="ai" 
+                               checked />
+                        <label for="preference_ai" class="preference-label">
+                            <span class="preference-icon ai-icon">🤖</span>
+                            <span class="preference-content">
+                                <strong><?= $block->escapeHtml(__('AI Assistant')) ?></strong>
+                                <small><?= $block->escapeHtml(__('Get an instant AI-generated answer')) ?></small>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="preference-option">
+                        <input type="radio" 
+                               name="answer_preference" 
+                               id="preference_admin" 
+                               value="admin" />
+                        <label for="preference_admin" class="preference-label">
+                            <span class="preference-icon admin-icon">👨‍💼</span>
+                            <span class="preference-content">
+                                <strong><?= $block->escapeHtml(__('Store Admin')) ?></strong>
+                                <small><?= $block->escapeHtml(__('Get a manually reviewed answer from our team')) ?></small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="field name required">
                 <label class="label" for="customer_name">
                     <span><?= $block->escapeHtml(__('Your Name')) ?></span>
@@ -171,5 +206,96 @@ if (!$product) {
 
 .question-form .action.back:hover {
     text-decoration: underline;
+}
+
+/* Answer Preference Radio Buttons */
+.answer-preference-options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.preference-option {
+    flex: 1;
+    min-width: 250px;
+}
+
+.preference-option input[type="radio"] {
+    display: none;
+}
+
+.preference-label {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.preference-label:hover {
+    border-color: #1979c3;
+    background: #f9f9f9;
+}
+
+.preference-option input[type="radio"]:checked + .preference-label {
+    border-color: #1979c3;
+    background: #e8f4fd;
+    box-shadow: 0 0 0 1px #1979c3;
+}
+
+.preference-icon {
+    font-size: 32px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.preference-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.preference-content strong {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.preference-content small {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.preference-option input[type="radio"]:checked + .preference-label .preference-content strong {
+    color: #1979c3;
+}
+
+/* AI Icon specific styling */
+.ai-icon {
+    filter: grayscale(50%);
+}
+
+.preference-option input[type="radio"]:checked + .preference-label .ai-icon {
+    filter: grayscale(0%);
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .answer-preference-options {
+        flex-direction: column;
+    }
+    
+    .preference-option {
+        min-width: 100%;
+    }
 }
 </style>

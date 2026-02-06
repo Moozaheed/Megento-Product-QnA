@@ -134,4 +134,36 @@ class Answer extends AbstractModel implements AnswerInterface
     {
         return $this->setData(self::UPDATED_AT, $updatedAt);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIsAiGenerated(): int
+    {
+        return (int)$this->getData(self::IS_AI_GENERATED);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setIsAiGenerated(int $isAiGenerated): AnswerInterface
+    {
+        return $this->setData(self::IS_AI_GENERATED, $isAiGenerated);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAiAnswerId(): ?int
+    {
+        return $this->getData(self::AI_ANSWER_ID) ? (int)$this->getData(self::AI_ANSWER_ID) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAiAnswerId(?int $aiAnswerId): AnswerInterface
+    {
+        return $this->setData(self::AI_ANSWER_ID, $aiAnswerId);
+    }
 }
