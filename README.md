@@ -88,7 +88,98 @@ docker-compose run --rm deploy magento-command setup:di:compile
 docker-compose run --rm deploy magento-command cache:flush
 ```
 
-## 🗄️ Database Schema
+## �️ Uninstallation
+
+### Method 1: Automatic Uninstall (Recommended)
+
+This method uses Magento's built-in uninstall command which automatically removes database tables:
+
+```bash
+# Uninstall the module (removes database tables automatically)
+php bin/magento module:uninstall Vendor_ProductQnA
+
+# Or for composer-installed modules:
+php bin/magento module:uninstall Vendor_ProductQnA --remove-data
+
+# Clean up
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento cache:flush
+```
+
+### Method 2: Manual Uninstall
+
+If you need to manually remove the module:
+
+**Step 1: Disable the Module**
+```bash
+php bin/magento module:disable Vendor_ProductQnA
+php bin/magento setup:upgrade
+```
+
+**Step 2: Remove Database Tables**
+
+⚠️ **WARNING**: This will permanently delete all questions and answers!
+
+```bash
+# Using MySQL CLI
+docker-compose exec -T db mysql -uroot -pmagento2 magento2 -e "
+DROP TABLE IF EXISTS vendor_product_qna_helpful;
+DROP TABLE IF EXISTS vendor_product_qna_answer;
+DROP TABLE IF EXISTS vendor_product_qna_question;
+"
+```
+
+Or connect to MySQL directly:
+```sql
+DROP TABLE IF EXISTS vendor_product_qna_helpful;
+DROP TABLE IF EXISTS vendor_product_qna_answer;
+DROP TABLE IF EXISTS vendor_product_qna_question;
+```
+
+**Step 3: Remove Module Files**
+
+For Composer installation:
+```bash
+composer remove vendor/magento2-productqna
+```
+
+For Manual installation:
+```bash
+rm -rf app/code/Vendor/ProductQnA
+```
+
+**Step 4: Clean up**
+```bash
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento cache:flush
+rm -rf generated/code/* generated/metadata/* var/cache/*
+```
+
+### Docker Uninstall
+
+For Docker environments:
+```bash
+docker-compose exec -T fpm bin/magento module:uninstall Vendor_ProductQnA --remove-data
+docker-compose exec -T fpm bin/magento cache:flush
+```
+
+### Backup Before Uninstall
+
+**Always backup your database before uninstalling:**
+```bash
+# Backup specific tables
+docker-compose exec -T db mysqldump -uroot -pmagento2 magento2 \
+  vendor_product_qna_question \
+  vendor_product_qna_answer \
+  vendor_product_qna_helpful > productqna_backup.sql
+
+# Or backup entire database
+docker-compose exec -T db mysqldump -uroot -pmagento2 magento2 > full_backup.sql
+```
+
+## �🗄️ Database Schema
 
 The module creates 3 tables:
 
@@ -361,7 +452,34 @@ Vendor - Your Company Name
 4. Push to the branch
 5. Create a Pull Request
 
-## 📞 Support
+## � Upcoming Features
+
+The following features are planned for future releases:
+
+### Helpful Votes System (Database Ready)
+- **Status**: Foundation implemented, feature pending
+- **Description**: Allow customers to vote on questions as "helpful"
+- **Database**: `vendor_product_qna_helpful` table already exists
+- **Planned Features**:
+  - 👍 "Was this helpful?" button on each question
+  - Vote tracking per customer (prevents duplicate votes)
+  - Display helpful count: "X people found this helpful"
+  - IP-based tracking for guest customers
+  - Real-time vote count updates via AJAX
+- **Technical Details**:
+  - Unique constraint on `question_id` + `customer_id`
+  - Foreign key cascade delete with questions
+  - Ready for implementation in v1.1.0
+
+### Other Planned Features
+- Email notifications for customers when their questions are answered
+- Customer dashboard section to view their submitted questions
+- Question categories/tags
+- Sorting options (Most Helpful, Most Recent, etc.)
+- Question search functionality
+- Answer votes (similar to question helpful votes)
+
+## �📞 Support
 
 For issues and questions:
 - GitHub Issues: https://github.com/yourusername/magento2-productqna/issues
