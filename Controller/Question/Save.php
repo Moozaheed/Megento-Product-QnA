@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Controller\Question;
@@ -99,7 +101,7 @@ class Save implements HttpPostActionInterface
     public function execute()
     {
         $isAjax = $this->request->isAjax();
-        
+
         $productId = (int)$this->request->getParam('product_id');
         $questionText = trim($this->request->getParam('question_text', ''));
         $customerName = trim($this->request->getParam('customer_name', ''));
@@ -120,25 +122,25 @@ class Save implements HttpPostActionInterface
 
         try {
             $product = $this->productRepository->getById($productId);
-            
+
             $question = $this->questionFactory->create();
             $question->setProductId($productId);
             $question->setQuestionText($questionText);
             $question->setCustomerName($customerName);
             $question->setCustomerEmail($customerEmail);
-            
+
             // Set customer ID if logged in
             if ($this->customerSession->isLoggedIn()) {
                 $question->setCustomerId($this->customerSession->getCustomerId());
             }
-            
+
             // Set status to pending (0) for admin approval
             $question->setStatus(0);
             $question->setVisibility(1);
             $question->setHelpfulCount(0);
-            
+
             $this->questionResource->save($question);
-            
+
             if ($isAjax) {
                 $result = $this->jsonFactory->create();
                 return $result->setData([
@@ -146,14 +148,13 @@ class Save implements HttpPostActionInterface
                     'message' => __('Your question has been submitted and will be reviewed by our team.')
                 ]);
             }
-            
+
             $this->messageManager->addSuccessMessage(
                 __('Your question has been submitted and will be reviewed by our team.')
             );
-            
+
             $resultRedirect = $this->redirectFactory->create();
             return $resultRedirect->setPath('catalog/product/view', ['id' => $productId]);
-            
         } catch (\Exception $e) {
             if ($isAjax) {
                 $result = $this->jsonFactory->create();

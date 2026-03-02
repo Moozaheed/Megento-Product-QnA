@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Ui\Component\Listing\Column;
@@ -63,12 +65,12 @@ class ProductLink extends Column
                     try {
                         $product = $this->productRepository->getById($productId);
                         $productName = $product->getName();
-                        
+
                         $editUrl = $this->urlBuilder->getUrl(
                             'catalog/product/edit',
                             ['id' => $productId]
                         );
-                        
+
                         $item['product_id'] = sprintf(
                             '<a href="%s" target="_blank" title="View Product">%s</a><br/><small>ID: %d</small>',
                             $editUrl,

@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Ui\Component\Listing\Column;
@@ -57,7 +59,7 @@ class QuestionActions extends Column
                     $isApproved = $status == QuestionInterface::STATUS_APPROVED;
                     $isAnswered = $status == QuestionInterface::STATUS_ANSWERED;
                     $isArchived = $status == QuestionInterface::STATUS_ARCHIVED;
-                    
+
                     // PENDING → Can: Approve, Answer, Archive
                     if ($isPending) {
                         $item[$name]['approve'] = [
@@ -90,7 +92,7 @@ class QuestionActions extends Column
                             ]
                         ];
                     }
-                    
+
                     // APPROVED → Can: Answer, Archive
                     if ($isApproved) {
                         $item[$name]['answer'] = [
@@ -112,7 +114,7 @@ class QuestionActions extends Column
                             ]
                         ];
                     }
-                    
+
                     // ANSWERED → Can: Edit Answer, Archive
                     if ($isAnswered) {
                         $item[$name]['answer'] = [
@@ -134,7 +136,7 @@ class QuestionActions extends Column
                             ]
                         ];
                     }
-                    
+
                     // ARCHIVED → Can: Approve, Set to Pending
                     if ($isArchived) {
                         $item[$name]['approve'] = [
@@ -160,7 +162,7 @@ class QuestionActions extends Column
                             ]
                         ];
                     }
-                    
+
                     // Delete button (always shown)
                     $item[$name]['delete'] = [
                         'href' => $this->urlBuilder->getUrl(

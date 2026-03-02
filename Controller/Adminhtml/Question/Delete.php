@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Controller\Adminhtml\Question;
@@ -16,7 +18,7 @@ use Vendor\ProductQnA\Model\QuestionFactory;
  */
 class Delete extends Action
 {
-    const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
+    public const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
 
     /**
      * @var QuestionFactory
@@ -57,7 +59,7 @@ class Delete extends Action
             try {
                 $question = $this->questionFactory->create();
                 $this->questionResource->load($question, $id);
-                
+
                 if ($question->getId()) {
                     $this->questionResource->delete($question);
                     $this->messageManager->addSuccessMessage(__('Question has been deleted.'));

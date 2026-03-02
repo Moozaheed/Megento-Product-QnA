@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Api\Data;
@@ -11,26 +13,26 @@ namespace Vendor\ProductQnA\Api\Data;
  */
 interface QuestionInterface
 {
-    const QUESTION_ID = 'question_id';
-    const PRODUCT_ID = 'product_id';
-    const CUSTOMER_ID = 'customer_id';
-    const CUSTOMER_NAME = 'customer_name';
-    const CUSTOMER_EMAIL = 'customer_email';
-    const QUESTION_TEXT = 'question_text';
-    const STATUS = 'status';
-    const HELPFUL_COUNT = 'helpful_count';
-    const VISIBILITY = 'visibility';
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public const QUESTION_ID = 'question_id';
+    public const PRODUCT_ID = 'product_id';
+    public const CUSTOMER_ID = 'customer_id';
+    public const CUSTOMER_NAME = 'customer_name';
+    public const CUSTOMER_EMAIL = 'customer_email';
+    public const QUESTION_TEXT = 'question_text';
+    public const STATUS = 'status';
+    public const HELPFUL_COUNT = 'helpful_count';
+    public const VISIBILITY = 'visibility';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
 
-    const STATUS_PENDING = 0;
-    const STATUS_APPROVED = 1;
-    const STATUS_REJECTED = 2;
-    const STATUS_ANSWERED = 3;
-    const STATUS_ARCHIVED = 4;
+    public const STATUS_PENDING = 0;
+    public const STATUS_APPROVED = 1;
+    public const STATUS_REJECTED = 2;
+    public const STATUS_ANSWERED = 3;
+    public const STATUS_ARCHIVED = 4;
 
-    const VISIBILITY_PUBLIC = 1;
-    const VISIBILITY_PRIVATE = 0;
+    public const VISIBILITY_PUBLIC = 1;
+    public const VISIBILITY_PRIVATE = 0;
 
     /**
      * Get question ID

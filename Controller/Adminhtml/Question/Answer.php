@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Controller\Adminhtml\Question;
@@ -15,7 +17,7 @@ use Magento\Framework\View\Result\PageFactory;
  */
 class Answer extends Action
 {
-    const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
+    public const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
 
     /**
      * @var PageFactory
@@ -42,11 +44,11 @@ class Answer extends Action
     public function execute()
     {
         $id = (int)$this->getRequest()->getParam('id');
-        
+
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Vendor_ProductQnA::questions');
         $resultPage->getConfig()->getTitle()->prepend(__('Answer Question #%1', $id));
-        
+
         return $resultPage;
     }
 }

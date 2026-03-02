@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Controller\Adminhtml\Question;
@@ -17,7 +19,7 @@ use Vendor\ProductQnA\Api\Data\QuestionInterface;
  */
 class Pending extends Action
 {
-    const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
+    public const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
 
     /**
      * @var QuestionFactory
@@ -58,11 +60,11 @@ class Pending extends Action
             try {
                 $question = $this->questionFactory->create();
                 $this->questionResource->load($question, $id);
-                
+
                 if ($question->getQuestionId()) {
                     $question->setStatus(QuestionInterface::STATUS_PENDING);
                     $this->questionResource->save($question);
-                    
+
                     $this->messageManager->addSuccessMessage(__('Question has been set to pending.'));
                 } else {
                     $this->messageManager->addErrorMessage(__('Question not found.'));

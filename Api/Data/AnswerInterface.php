@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Api\Data;
@@ -11,16 +13,16 @@ namespace Vendor\ProductQnA\Api\Data;
  */
 interface AnswerInterface
 {
-    const ANSWER_ID = 'answer_id';
-    const QUESTION_ID = 'question_id';
-    const ADMIN_USER_ID = 'admin_user_id';
-    const ANSWER_TEXT = 'answer_text';
-    const STATUS = 'status';
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public const ANSWER_ID = 'answer_id';
+    public const QUESTION_ID = 'question_id';
+    public const ADMIN_USER_ID = 'admin_user_id';
+    public const ANSWER_TEXT = 'answer_text';
+    public const STATUS = 'status';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
 
-    const STATUS_PENDING = 0;
-    const STATUS_PUBLISHED = 1;
+    public const STATUS_PENDING = 0;
+    public const STATUS_PUBLISHED = 1;
 
     /**
      * Get answer ID

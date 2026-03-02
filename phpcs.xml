@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<ruleset name="Vendor ProductQnA">
+    <description>Coding standard for Vendor_ProductQnA module - PSR-12 with Magento exceptions</description>
+    
+    <!-- Include PSR-12 standard -->
+    <rule ref="PSR12">
+        <!-- Exclude Magento framework underscore patterns -->
+        <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    </rule>
+    
+    <!-- Check the module directory -->
+    <file>.</file>
+    
+    <!-- Exclude patterns -->
+    <exclude-pattern>*/Test/*</exclude-pattern>
+    <exclude-pattern>*\.bak$</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    
+    <!-- PHP file extensions -->
+    <arg name="extensions" value="php"/>
+    
+    <!-- Show progress and use colors -->
+    <arg name="colors"/>
+    <arg value="p"/>
+    
+    <!-- Set report width -->
+    <arg name="report-width" value="120"/>
+</ruleset>

@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Controller\Adminhtml\Question;
@@ -20,7 +22,7 @@ use Magento\Backend\Model\Auth\Session;
  */
 class SaveAnswer extends Action
 {
-    const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
+    public const ADMIN_RESOURCE = 'Vendor_ProductQnA::questions';
 
     /**
      * @var AnswerFactory
@@ -79,7 +81,7 @@ class SaveAnswer extends Action
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        
+
         $questionId = (int)$this->getRequest()->getParam('question_id');
         $answerText = trim($this->getRequest()->getParam('answer_text', ''));
 
@@ -94,9 +96,9 @@ class SaveAnswer extends Action
             $answer->setAnswerText($answerText);
             $answer->setAdminUserId((int)$this->authSession->getUser()->getId());
             $answer->setStatus(1); // Published
-            
+
             $this->answerResource->save($answer);
-            
+
             // Update question status to "Answered"
             $question = $this->questionFactory->create();
             $this->questionResource->load($question, $questionId);
@@ -104,10 +106,9 @@ class SaveAnswer extends Action
                 $question->setStatus(QuestionInterface::STATUS_ANSWERED);
                 $this->questionResource->save($question);
             }
-            
+
             $this->messageManager->addSuccessMessage(__('Answer has been saved.'));
             return $resultRedirect->setPath('*/*/');
-            
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__('Error saving answer: %1', $e->getMessage()));
             return $resultRedirect->setPath('*/*/answer', ['id' => $questionId]);

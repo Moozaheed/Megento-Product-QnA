@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © Vendor. All rights reserved.
  */
+
 declare(strict_types=1);
 
 namespace Vendor\ProductQnA\Controller\Question;
@@ -72,7 +74,7 @@ class Form implements HttpGetActionInterface
     public function execute()
     {
         $productId = (int)$this->request->getParam('product_id');
-        
+
         if (!$productId) {
             $this->messageManager->addErrorMessage(__('Product ID is required.'));
             $resultRedirect = $this->redirectFactory->create();
@@ -81,10 +83,10 @@ class Form implements HttpGetActionInterface
 
         try {
             $product = $this->productRepository->getById($productId);
-            
+
             $resultPage = $this->resultPageFactory->create();
             $resultPage->getConfig()->getTitle()->set(__('Ask a Question about %1', $product->getName()));
-            
+
             return $resultPage;
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__('Product not found.'));
