@@ -1,0 +1,309 @@
+<?php
+/**
+ * @var $block \Vendor\ProductQnA\Block\Customer\Questions
+ */
+?>
+<div class="table-wrapper questions-items">
+    <table class="data table table-questions-items" id="my-questions-table">
+        <caption class="table-caption"><?= $block->escapeHtml(__('My Questions')) ?></caption>
+        <thead>
+            <tr>
+                <th scope="col" class="col product"><?= $block->escapeHtml(__('Product')) ?></th>
+                <th scope="col" class="col question"><?= $block->escapeHtml(__('Question')) ?></th>
+                <th scope="col" class="col status"><?= $block->escapeHtml(__('Status')) ?></th>
+                <th scope="col" class="col date"><?= $block->escapeHtml(__('Date')) ?></th>
+                <th scope="col" class="col actions"><?= $block->escapeHtml(__('Action')) ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($block->getQuestions() as $question): ?>
+                <?php
+                    $product = $block->getProduct((int)$question->getProductId());
+                    $answer = $block->getAnswer((int)$question->getQuestionId());
+                    $hasAnswer = $answer !== null;
+                    $displayStatus = $hasAnswer ? 'answered' : $question->getStatus();
+                ?>
+                <tr class="question-item <?= $block->escapeHtmlAttr($block->getStatusClass($displayStatus)) ?>">
+                    <td data-th="<?= $block->escapeHtmlAttr(__('Product')) ?>" class="col product">
+                        <?php if ($product): ?>
+                            <a href="<?= $block->escapeUrl($product->getProductUrl()) ?>" class="product-item-link">
+                                <?= $block->escapeHtml($product->getName()) ?>
+                            </a>
+                        <?php else: ?>
+                            <span class="product-unavailable"><?= $block->escapeHtml(__('Product no longer available')) ?></span>
+                        <?php endif; ?>
+                    </td>
+                    <td data-th="<?= $block->escapeHtmlAttr(__('Question')) ?>" class="col question">
+                        <div class="question-text">
+                            <?= $block->escapeHtml($question->getQuestionText()) ?>
+                        </div>
+                        <?php if ($hasAnswer): ?>
+                            <div class="answer-preview">
+                                <strong><?= $block->escapeHtml(__('Answer:')) ?></strong>
+                                <p><?= $block->escapeHtml($answer->getAnswerText()) ?></p>
+                                <?php if ($answer->getAnsweredBy()): ?>
+                                    <p class="answered-by">
+                                        <small>
+                                            <?= $block->escapeHtml(__('Answered by: %1 on %2', $answer->getAnsweredBy(), $block->formatDate($answer->getAnswerDate()))) ?>
+                                        </small>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </td>
+                    <td data-th="<?= $block->escapeHtmlAttr(__('Status')) ?>" class="col status">
+                        <span class="status-badge <?= $block->escapeHtmlAttr($block->getStatusClass($displayStatus)) ?>">
+                            <span class="status-icon"><?= /* @noEscape */ $block->getStatusIcon($displayStatus) ?></span>
+                            <span class="status-label"><?= $block->escapeHtml($block->getStatusLabel($displayStatus)) ?></span>
+                        </span>
+                        <?php if ($displayStatus === 'pending'): ?>
+                            <div class="status-message">
+                                <small><?= $block->escapeHtml(__('Awaiting admin approval')) ?></small>
+                            </div>
+                        <?php elseif ($displayStatus === 'approved' && !$hasAnswer): ?>
+                            <div class="status-message">
+                                <small><?= $block->escapeHtml(__('Published, awaiting answer')) ?></small>
+                            </div>
+                        <?php elseif ($displayStatus === 'rejected'): ?>
+                            <div class="status-message">
+                                <small><?= $block->escapeHtml(__('Not approved for publication')) ?></small>
+                            </div>
+                        <?php endif; ?>
+                    </td>
+                    <td data-th="<?= $block->escapeHtmlAttr(__('Date')) ?>" class="col date">
+                        <?= $block->escapeHtml($block->formatDate($question->getCreatedAt())) ?>
+                    </td>
+                    <td data-th="<?= $block->escapeHtmlAttr(__('Action')) ?>" class="col actions">
+                        <?php if ($product): ?>
+                            <a href="<?= $block->escapeUrl($product->getProductUrl()) ?>#product-qna" class="action view">
+                                <span><?= $block->escapeHtml(__('View on Product Page')) ?></span>
+                            </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="legend-status">
+    <h3><?= $block->escapeHtml(__('Status Legend:')) ?></h3>
+    <ul class="status-legend">
+        <li>
+            <span class="status-badge status-pending">
+                <span class="status-icon">⏱</span>
+                <span class="status-label"><?= $block->escapeHtml(__('Pending')) ?></span>
+            </span>
+            <span class="status-description"><?= $block->escapeHtml(__('Awaiting admin approval')) ?></span>
+        </li>
+        <li>
+            <span class="status-badge status-approved">
+                <span class="status-icon">✓</span>
+                <span class="status-label"><?= $block->escapeHtml(__('Approved')) ?></span>
+            </span>
+            <span class="status-description"><?= $block->escapeHtml(__('Published, awaiting answer')) ?></span>
+        </li>
+        <li>
+            <span class="status-badge status-answered">
+                <span class="status-icon">✓✓</span>
+                <span class="status-label"><?= $block->escapeHtml(__('Answered')) ?></span>
+            </span>
+            <span class="status-description"><?= $block->escapeHtml(__('Received official answer')) ?></span>
+        </li>
+        <li>
+            <span class="status-badge status-rejected">
+                <span class="status-icon">✗</span>
+                <span class="status-label"><?= $block->escapeHtml(__('Rejected')) ?></span>
+            </span>
+            <span class="status-description"><?= $block->escapeHtml(__('Not approved for publication')) ?></span>
+        </li>
+    </ul>
+</div>
+
+<style>
+.block-dashboard-questions {
+    margin-bottom: 30px;
+}
+
+.table-questions-items {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.table-questions-items th {
+    font-weight: 600;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+}
+
+.table-questions-items td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+.question-item.status-answered td {
+    background-color: #f0f9ff;
+}
+
+.question-item.status-rejected td {
+    background-color: #fff0f0;
+}
+
+.question-text {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.answer-preview {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 3px solid #4caf50;
+    font-size: 0.9em;
+}
+
+.answer-preview p {
+    margin: 5px 0;
+}
+
+.answered-by {
+    color: #666;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.status-badge .status-icon {
+    margin-right: 5px;
+}
+
+.status-badge.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.status-approved {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.status-answered {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-message {
+    margin-top: 5px;
+    color: #666;
+}
+
+.product-unavailable {
+    color: #999;
+    font-style: italic;
+}
+
+.col.product {
+    width: 20%;
+}
+
+.col.question {
+    width: 40%;
+}
+
+.col.status {
+    width: 15%;
+}
+
+.col.date {
+    width: 12%;
+}
+
+.col.actions {
+    width: 13%;
+}
+
+.legend-status {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.legend-status h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.status-legend {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-legend li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.status-legend .status-description {
+    color: #666;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .table-questions-items {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .table-questions-items thead {
+        display: none;
+    }
+    
+    .table-questions-items tbody tr {
+        display: block;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .table-questions-items td {
+        display: block;
+        text-align: left !important;
+        padding: 10px;
+        border-bottom: none;
+    }
+    
+    .table-questions-items td:before {
+        content: attr(data-th) ": ";
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 10px;
+    }
+    
+    .col.product,
+    .col.question,
+    .col.status,
+    .col.date,
+    .col.actions {
+        width: 100%;
+    }
+}
+</style>

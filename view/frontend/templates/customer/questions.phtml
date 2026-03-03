@@ -1,0 +1,27 @@
+<?php
+/**
+ * @var $block \Vendor\ProductQnA\Block\Customer\Questions
+ */
+?>
+<div class="block block-dashboard-questions">
+    <div class="block-title">
+        <strong><?= $block->escapeHtml(__('My Questions')) ?></strong>
+    </div>
+    <div class="block-content">
+        <?php $questions = $block->getQuestions(); ?>
+        <?php if ($questions->getSize()): ?>
+            <?= $block->getChildHtml('question.list') ?>
+        <?php else: ?>
+            <div class="message info empty">
+                <span><?= $block->escapeHtml(__('You have not submitted any questions yet.')) ?></span>
+            </div>
+            <div class="actions-toolbar">
+                <div class="primary">
+                    <a href="<?= $block->escapeUrl($block->getUrl('/')) ?>" class="action primary">
+                        <span><?= $block->escapeHtml(__('Browse Products')) ?></span>
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
