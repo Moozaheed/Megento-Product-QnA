@@ -50,7 +50,29 @@
                 </templates>
             </settings>
         </filters>
-        <paging name="listing_paging"/>
+        <paging name="listing_paging">
+            <settings>
+                <options>
+                    <option name="20" xsi:type="array">
+                        <item name="value" xsi:type="number">20</item>
+                        <item name="label" xsi:type="string">20</item>
+                    </option>
+                    <option name="50" xsi:type="array">
+                        <item name="value" xsi:type="number">50</item>
+                        <item name="label" xsi:type="string">50</item>
+                    </option>
+                    <option name="100" xsi:type="array">
+                        <item name="value" xsi:type="number">100</item>
+                        <item name="label" xsi:type="string">100</item>
+                    </option>
+                    <option name="200" xsi:type="array">
+                        <item name="value" xsi:type="number">200</item>
+                        <item name="label" xsi:type="string">200</item>
+                    </option>
+                </options>
+                <pageSize>20</pageSize>
+            </settings>
+        </paging>
     </listingToolbar>
     <columns name="productqna_question_columns">
         <selectionsColumn name="ids">
@@ -62,14 +84,20 @@
             <settings>
                 <filter>textRange</filter>
                 <label translate="true">ID</label>
-                <sorting>asc</sorting>
             </settings>
         </column>
         <column name="product_id" class="Vendor\ProductQnA\Ui\Component\Listing\Column\ProductLink">
             <settings>
                 <filter>textRange</filter>
-                <label translate="true">Product</label>
+                <label translate="true">Product ID</label>
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+            </settings>
+        </column>
+        <column name="product_name">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Product Name</label>
+                <visible>true</visible>
             </settings>
         </column>
         <column name="question_text">
@@ -104,6 +132,7 @@
                 <filter>dateRange</filter>
                 <dataType>date</dataType>
                 <label translate="true">Created</label>
+                <sorting>desc</sorting>
             </settings>
         </column>
         <actionsColumn name="actions" class="Vendor\ProductQnA\Ui\Component\Listing\Column\QuestionActions">
