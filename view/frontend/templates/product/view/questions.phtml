@@ -89,7 +89,7 @@ $questionCount = $block->getQuestionCount();
             <nav class="qna-pagination" aria-label="Questions pagination">
                 <?php for ($i = 1; $i <= $lastPage; $i++): ?>
                     <?php $url = $block->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => ['question_page' => $i]]); ?>
-                    <a href="<?= $block->escapeUrl($url) ?>" class="qna-page-link <?= $i === $currentPage ? 'active' : '' ?>"><?= $i ?></a>
+                    <a href="<?= $block->escapeUrl($url . '#product-qna-tab') ?>" class="qna-page-link <?= $i === $currentPage ? 'active' : '' ?>"><?= $i ?></a>
                 <?php endfor; ?>
             </nav>
         <?php endif; ?>
