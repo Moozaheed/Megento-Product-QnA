@@ -44,7 +44,7 @@
                                 <?php if ($answer->getAnsweredBy()): ?>
                                     <p class="answered-by">
                                         <small>
-                                            <?= $block->escapeHtml(__('Answered by: %1 on %2', $answer->getAnsweredBy(), $block->formatDate($answer->getAnswerDate()))) ?>
+                                            <?= $block->escapeHtml(__('Answered by: %1 on %2', $answer->getAnsweredBy(), $block->formatQuestionDate($answer->getAnswerDate()))) ?>
                                         </small>
                                     </p>
                                 <?php endif; ?>
@@ -71,7 +71,7 @@
                         <?php endif; ?>
                     </td>
                     <td data-th="<?= $block->escapeHtmlAttr(__('Date')) ?>" class="col date">
-                        <?= $block->escapeHtml($block->formatDate($question->getCreatedAt())) ?>
+                        <?= $block->escapeHtml($block->formatQuestionDate($question->getCreatedAt())) ?>
                     </td>
                     <td data-th="<?= $block->escapeHtmlAttr(__('Action')) ?>" class="col actions">
                         <?php if ($product): ?>
@@ -119,6 +119,21 @@
         </li>
     </ul>
 </div>
+
+<?php
+    // Pagination for customer questions
+    $currentPage = (int)$block->getRequest()->getParam('question_page', 1);
+    $questionsCollection = $block->getQuestions();
+    $lastPage = $questionsCollection ? (int)$questionsCollection->getLastPageNumber() : 1;
+?>
+<?php if ($lastPage > 1): ?>
+    <nav class="customer-qna-pagination" aria-label="My Questions pagination">
+        <?php for ($i = 1; $i <= $lastPage; $i++): ?>
+            <?php $url = $block->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => ['question_page' => $i]]); ?>
+            <a href="<?= $block->escapeUrl($url) ?>" class="customer-qna-page-link <?= $i === $currentPage ? 'active' : '' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+    </nav>
+<?php endif; ?>
 
 <style>
 .block-dashboard-questions {
@@ -265,6 +280,31 @@
 .status-legend .status-description {
     color: #666;
     font-size: 0.9em;
+}
+
+.customer-qna-pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.customer-qna-page-link {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+}
+
+.customer-qna-page-link.active {
+    background-color: #1979c3;
+    color: #fff;
+    border-color: #1979c3;
+}
+
+.customer-qna-page-link:hover {
+    background-color: #f0f0f0;
 }
 
 @media (max-width: 768px) {

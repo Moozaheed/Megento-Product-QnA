@@ -14,6 +14,7 @@ use Magento\Framework\Registry;
 use Vendor\ProductQnA\Model\ResourceModel\Question\CollectionFactory as QuestionCollectionFactory;
 use Vendor\ProductQnA\Model\ResourceModel\Answer\CollectionFactory as AnswerCollectionFactory;
 use Vendor\ProductQnA\Api\Data\QuestionInterface;
+use Magento\Customer\Model\Session as CustomerSession;
 
 /**
  * Product Questions Block
@@ -34,6 +35,11 @@ class Questions extends Template
      * @var AnswerCollectionFactory
      */
     private $answerCollectionFactory;
+
+    /**
+     * @var CustomerSession
+     */
+    private $customerSession;
 
     /**
      * @var \Magento\Framework\ObjectManagerInterface
@@ -59,11 +65,13 @@ class Questions extends Template
         QuestionCollectionFactory $questionCollectionFactory,
         AnswerCollectionFactory $answerCollectionFactory,
         \Magento\Framework\ObjectManagerInterface $objectManager,
+        CustomerSession $customerSession,
         array $data = []
     ) {
         $this->registry = $registry;
         $this->questionCollectionFactory = $questionCollectionFactory;
         $this->answerCollectionFactory = $answerCollectionFactory;
+        $this->customerSession = $customerSession;
         $this->objectManager = $objectManager;
         parent::__construct($context, $data);
     }
@@ -96,9 +104,50 @@ class Questions extends Template
                     ])
                     ->addFieldToFilter('visibility', QuestionInterface::VISIBILITY_PUBLIC)
                     ->setOrder('created_at', 'DESC');
+
+                // Apply pagination: default page size 5
+                $page = (int)$this->getRequest()->getParam('question_page', 1);
+                $this->questionCollection->setPageSize(5)->setCurPage($page);
             }
         }
         return $this->questionCollection;
+    }
+
+    /**
+     * Is customer logged in
+     *
+     * @return bool
+     */
+    public function isLoggedIn(): bool
+    {
+        return $this->customerSession->isLoggedIn();
+    }
+
+    /**
+     * Get customer name (if logged in)
+     *
+     * @return string
+     */
+    public function getCustomerName(): string
+    {
+        if ($this->customerSession->isLoggedIn()) {
+            $customer = $this->customerSession->getCustomer();
+            return $customer->getFirstname() . ' ' . $customer->getLastname();
+        }
+        return '';
+    }
+
+    /**
+     * Get customer email (if logged in)
+     *
+     * @return string
+     */
+    public function getCustomerEmail(): string
+    {
+        if ($this->customerSession->isLoggedIn()) {
+            return (string)$this->customerSession->getCustomer()->getData('email');
+        }
+        return '';
     }
 
     /**

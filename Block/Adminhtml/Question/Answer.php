@@ -157,4 +157,15 @@ class Answer extends Template
     {
         return $this->getUrl('*/*/');
     }
+
+    /**
+     * Format question date
+     *
+     * @param string $date
+     * @return string
+     */
+    public function formatQuestionDate(string $date): string
+    {
+        return $this->formatTime($date, \IntlDateFormatter::MEDIUM);
+    }
 }

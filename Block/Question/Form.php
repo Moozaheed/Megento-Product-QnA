@@ -97,7 +97,8 @@ class Form extends Template
     public function getCustomerName(): string
     {
         if ($this->customerSession->isLoggedIn()) {
-            return $this->customerSession->getCustomer()->getName();
+            $customer = $this->customerSession->getCustomer();
+            return $customer->getFirstname() . ' ' . $customer->getLastname();
         }
         return '';
     }
@@ -110,7 +111,7 @@ class Form extends Template
     public function getCustomerEmail(): string
     {
         if ($this->customerSession->isLoggedIn()) {
-            return $this->customerSession->getCustomer()->getEmail();
+            return (string)$this->customerSession->getCustomer()->getData('email');
         }
         return '';
     }

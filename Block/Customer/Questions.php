@@ -82,6 +82,10 @@ class Questions extends Template
             $collection = $this->questionCollectionFactory->create();
             $collection->addFieldToFilter('customer_email', $customerEmail)
                 ->setOrder('created_at', 'DESC');
+
+            // Apply pagination: default 5 per page
+            $page = (int)$this->getRequest()->getParam('question_page', 1);
+            $collection->setPageSize(5)->setCurPage($page);
             
             $this->questions = $collection;
         }
@@ -198,12 +202,12 @@ class Questions extends Template
     }
 
     /**
-     * Format date
+     * Format question date
      *
      * @param string $date
      * @return string
      */
-    public function formatDate(string $date): string
+    public function formatQuestionDate(string $date): string
     {
         return $this->formatTime($date, \IntlDateFormatter::MEDIUM);
     }

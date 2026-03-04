@@ -38,7 +38,7 @@ if (!$question) {
         
         <div class="field">
             <strong><?= $block->escapeHtml(__('Asked on:')) ?></strong>
-            <?= $block->escapeHtml($block->formatDate($question->getCreatedAt())) ?>
+            <?= $block->escapeHtml($block->formatQuestionDate($question->getCreatedAt())) ?>
         </div>
         
         <div class="field question-text">
@@ -54,7 +54,7 @@ if (!$question) {
         <div class="answer-item">
             <div class="answer-meta">
                 <strong><?= $block->escapeHtml($block->getAdminUserName($answer->getAdminUserId())) ?></strong>
-                <span class="answer-date"><?= $block->escapeHtml($block->formatDate($answer->getCreatedAt())) ?></span>
+                <span class="answer-date"><?= $block->escapeHtml($block->formatQuestionDate($answer->getCreatedAt())) ?></span>
             </div>
             <div class="answer-text">
                 <?= $block->escapeHtml($answer->getAnswerText()) ?>

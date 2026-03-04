@@ -47,6 +47,7 @@ if (!$product) {
                 </div>
             </div>
 
+            <?php if (!$block->isLoggedIn()): ?>
             <div class="field name required">
                 <label class="label" for="customer_name">
                     <span><?= $block->escapeHtml(__('Your Name')) ?></span>
@@ -57,7 +58,6 @@ if (!$product) {
                            id="customer_name" 
                            class="input-text" 
                            value="<?= $block->escapeHtml($block->getCustomerName()) ?>"
-                           <?= $block->isLoggedIn() ? 'readonly' : '' ?>
                            required />
                 </div>
             </div>
@@ -72,10 +72,10 @@ if (!$product) {
                            id="customer_email" 
                            class="input-text" 
                            value="<?= $block->escapeHtml($block->getCustomerEmail()) ?>"
-                           <?= $block->isLoggedIn() ? 'readonly' : '' ?>
                            required />
                 </div>
             </div>
+            <?php endif; ?>
         </fieldset>
 
         <div class="actions-toolbar">
