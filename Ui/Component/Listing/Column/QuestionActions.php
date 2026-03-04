@@ -58,9 +58,9 @@ class QuestionActions extends Column
                     $isPending = $status == QuestionInterface::STATUS_PENDING;
                     $isApproved = $status == QuestionInterface::STATUS_APPROVED;
                     $isAnswered = $status == QuestionInterface::STATUS_ANSWERED;
-                    $isArchived = $status == QuestionInterface::STATUS_ARCHIVED;
+                    $isRejected = $status == QuestionInterface::STATUS_ARCHIVED; // Treat archived as rejected
 
-                    // PENDING → Can: Approve, Answer, Archive
+                    // PENDING → Can: Approve, Answer, Reject
                     if ($isPending) {
                         $item[$name]['approve'] = [
                             'href' => $this->urlBuilder->getUrl(
@@ -80,20 +80,20 @@ class QuestionActions extends Column
                             ),
                             'label' => __('Answer')
                         ];
-                        $item[$name]['archive'] = [
+                        $item[$name]['reject'] = [
                             'href' => $this->urlBuilder->getUrl(
                                 'productqna/question/archive',
                                 ['id' => $item['question_id']]
                             ),
-                            'label' => __('Archive'),
+                            'label' => __('Reject'),
                             'confirm' => [
-                                'title' => __('Archive Question'),
-                                'message' => __('Are you sure you want to archive this question?')
+                                'title' => __('Reject Question'),
+                                'message' => __('Are you sure you want to reject this question?')
                             ]
                         ];
                     }
 
-                    // APPROVED → Can: Answer, Archive
+                    // APPROVED → Can: Answer, Reject
                     if ($isApproved) {
                         $item[$name]['answer'] = [
                             'href' => $this->urlBuilder->getUrl(
@@ -102,20 +102,20 @@ class QuestionActions extends Column
                             ),
                             'label' => __('Answer')
                         ];
-                        $item[$name]['archive'] = [
+                        $item[$name]['reject'] = [
                             'href' => $this->urlBuilder->getUrl(
                                 'productqna/question/archive',
                                 ['id' => $item['question_id']]
                             ),
-                            'label' => __('Archive'),
+                            'label' => __('Reject'),
                             'confirm' => [
-                                'title' => __('Archive Question'),
-                                'message' => __('Are you sure you want to archive this question?')
+                                'title' => __('Reject Question'),
+                                'message' => __('Are you sure you want to reject this question?')
                             ]
                         ];
                     }
 
-                    // ANSWERED → Can: Edit Answer, Archive
+                    // ANSWERED → Can: Edit Answer, Reject
                     if ($isAnswered) {
                         $item[$name]['answer'] = [
                             'href' => $this->urlBuilder->getUrl(
@@ -124,21 +124,21 @@ class QuestionActions extends Column
                             ),
                             'label' => __('Edit Answer')
                         ];
-                        $item[$name]['archive'] = [
+                        $item[$name]['reject'] = [
                             'href' => $this->urlBuilder->getUrl(
                                 'productqna/question/archive',
                                 ['id' => $item['question_id']]
                             ),
-                            'label' => __('Archive'),
+                            'label' => __('Reject'),
                             'confirm' => [
-                                'title' => __('Archive Question'),
-                                'message' => __('Are you sure you want to archive this question?')
+                                'title' => __('Reject Question'),
+                                'message' => __('Are you sure you want to reject this question?')
                             ]
                         ];
                     }
 
-                    // ARCHIVED → Can: Approve, Set to Pending
-                    if ($isArchived) {
+                    // REJECTED → Can: Approve, Set to Pending
+                    if ($isRejected) {
                         $item[$name]['approve'] = [
                             'href' => $this->urlBuilder->getUrl(
                                 'productqna/question/approve',

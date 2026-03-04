@@ -21,7 +21,9 @@
                     $product = $block->getProduct((int)$question->getProductId());
                     $answer = $block->getAnswer((int)$question->getQuestionId());
                     $hasAnswer = $answer !== null;
-                    $displayStatus = $hasAnswer ? 'answered' : $question->getStatus();
+                    // Convert numeric status to string, treating archived (4) as rejected
+                    $statusString = $block->convertStatusToString((int)$question->getStatus());
+                    $displayStatus = $hasAnswer ? 'answered' : $statusString;
                 ?>
                 <tr class="question-item <?= $block->escapeHtmlAttr($block->getStatusClass($displayStatus)) ?>">
                     <td data-th="<?= $block->escapeHtmlAttr(__('Product')) ?>" class="col product">

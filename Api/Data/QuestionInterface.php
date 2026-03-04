@@ -29,7 +29,7 @@ interface QuestionInterface
     public const STATUS_APPROVED = 1;
     public const STATUS_REJECTED = 2;
     public const STATUS_ANSWERED = 3;
-    public const STATUS_ARCHIVED = 4;
+    public const STATUS_ARCHIVED = 4; // Deprecated: Use STATUS_REJECTED instead
 
     public const VISIBILITY_PUBLIC = 1;
     public const VISIBILITY_PRIVATE = 0;

@@ -15,7 +15,7 @@ use Vendor\ProductQnA\Model\ResourceModel\Question as QuestionResource;
 use Vendor\ProductQnA\Api\Data\QuestionInterface;
 
 /**
- * Archive Question Controller
+ * Reject Question Controller (Archive action)
  */
 class Archive extends Action
 {
@@ -47,7 +47,7 @@ class Archive extends Action
     }
 
     /**
-     * Execute action
+     * Execute action - Reject question
      *
      * @return \Magento\Framework\Controller\Result\Redirect
      */
@@ -62,15 +62,16 @@ class Archive extends Action
                 $this->questionResource->load($question, $id);
 
                 if ($question->getQuestionId()) {
+                    // Set status to rejected (using ARCHIVED constant for backward compatibility)
                     $question->setStatus(QuestionInterface::STATUS_ARCHIVED);
                     $this->questionResource->save($question);
 
-                    $this->messageManager->addSuccessMessage(__('Question has been archived.'));
+                    $this->messageManager->addSuccessMessage(__('Question has been rejected.'));
                 } else {
                     $this->messageManager->addErrorMessage(__('Question not found.'));
                 }
             } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage(__('Error archiving question: %1', $e->getMessage()));
+                $this->messageManager->addErrorMessage(__('Error rejecting question: %1', $e->getMessage()));
             }
         }
 
