@@ -80,6 +80,19 @@ $questionCount = $block->getQuestionCount();
                 </div>
             <?php endforeach; ?>
         </div>
+        <?php
+            // Pagination controls for product questions
+            $currentPage = (int)$block->getRequest()->getParam('question_page', 1);
+            $lastPage = ($questions) ? (int)$questions->getLastPageNumber() : 1;
+        ?>
+        <?php if ($lastPage > 1): ?>
+            <nav class="qna-pagination" aria-label="Questions pagination">
+                <?php for ($i = 1; $i <= $lastPage; $i++): ?>
+                    <?php $url = $block->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => ['question_page' => $i]]); ?>
+                    <a href="<?= $block->escapeUrl($url . '#product-qna-tab') ?>" class="qna-page-link <?= $i === $currentPage ? 'active' : '' ?>"><?= $i ?></a>
+                <?php endfor; ?>
+            </nav>
+        <?php endif; ?>
     <?php else: ?>
         <div class="qna-empty">
             <p><?= $block->escapeHtml(__('No questions yet. Be the first to ask!')) ?></p>
@@ -112,6 +125,7 @@ $questionCount = $block->getQuestionCount();
                     placeholder="<?= $block->escapeHtml(__('What would you like to know about this product?')) ?>"></textarea>
             </div>
 
+            <?php if (!$block->isLoggedIn()): ?>
             <div class="qna-form-group">
                 <label for="customer_name" class="qna-label">
                     <?= $block->escapeHtml(__('Your Name')) ?> <span class="required">*</span>
@@ -137,6 +151,11 @@ $questionCount = $block->getQuestionCount();
                     required
                     placeholder="<?= $block->escapeHtml(__('your@email.com')) ?>" />
             </div>
+            <?php else: ?>
+                <!-- Hidden fields for logged-in users -->
+                <input type="hidden" name="customer_name" value="<?= $block->escapeHtmlAttr($block->getCustomerName()) ?>" />
+                <input type="hidden" name="customer_email" value="<?= $block->escapeHtmlAttr($block->getCustomerEmail()) ?>" />
+            <?php endif; ?>
 
             <div class="qna-form-notice">
                 <p><?= $block->escapeHtml(__('Your question will be reviewed by our team before being published.')) ?></p>
@@ -175,6 +194,10 @@ require(['jquery'], function($) {
         
         var form = $(event.target);
         var formData = new FormData(form[0]);
+        
+        // Add isAjax flag to indicate this is an AJAX request
+        formData.append('isAjax', 'true');
+        
         var messageDiv = $('#qna-form-message');
         var submitBtn = form.find('button[type="submit"]');
         
@@ -210,7 +233,6 @@ require(['jquery'], function($) {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Error:', error);
                 messageDiv.show();
                 messageDiv.removeClass('qna-message-success').addClass('qna-message-error');
                 messageDiv.text('<?= $block->escapeJs(__('An error occurred. Please try again.')) ?>');
@@ -592,6 +614,31 @@ require(['jquery'], function($) {
 
 .qna-btn-secondary:hover {
     background: #e0e0e0;
+}
+
+.qna-pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.qna-page-link {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+}
+
+.qna-page-link.active {
+    background-color: #1979c3;
+    color: #fff;
+    border-color: #1979c3;
+}
+
+.qna-page-link:hover {
+    background-color: #f0f0f0;
 }
 
 .qna-message {
