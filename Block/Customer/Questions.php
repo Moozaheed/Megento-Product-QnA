@@ -202,6 +202,26 @@ class Questions extends Template
     }
 
     /**
+     * Convert numeric status to string status
+     * Treats STATUS_ARCHIVED (4) as "rejected"
+     *
+     * @param int $numericStatus
+     * @return string
+     */
+    public function convertStatusToString(int $numericStatus): string
+    {
+        $statusMap = [
+            0 => 'pending',      // STATUS_PENDING
+            1 => 'approved',     // STATUS_APPROVED
+            2 => 'rejected',     // STATUS_REJECTED
+            3 => 'answered',     // STATUS_ANSWERED
+            4 => 'rejected'      // STATUS_ARCHIVED - treat as rejected
+        ];
+        
+        return $statusMap[$numericStatus] ?? 'pending';
+    }
+
+    /**
      * Format question date
      *
      * @param string $date

@@ -25,7 +25,7 @@ class QuestionStatus implements OptionSourceInterface
             ['value' => 1, 'label' => __('Approved')],
             ['value' => 2, 'label' => __('Rejected')],
             ['value' => 3, 'label' => __('Answered')],
-            ['value' => 4, 'label' => __('Archived')]
+            ['value' => 4, 'label' => __('Rejected')]  // Treat archived as rejected
         ];
     }
 }
