@@ -123,4 +123,47 @@ class Collection extends QuestionCollection implements SearchResultInterface
     {
         return $this;
     }
+
+    /**
+     * Join with catalog_product_entity table to add product name for filtering
+     *
+     * @return $this
+     */
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+
+        // Join with product entity table to get product name
+        $this->getSelect()->joinLeft(
+            ['cpe' => $this->getTable('catalog_product_entity')],
+            'main_table.product_id = cpe.entity_id',
+            []
+        );
+
+        // Join with product varchar attribute for name
+        $this->getSelect()->joinLeft(
+            ['cpev' => $this->getTable('catalog_product_entity_varchar')],
+            'cpe.entity_id = cpev.entity_id AND cpev.attribute_id = (SELECT attribute_id FROM eav_attribute WHERE attribute_code = "name" AND entity_type_id = 4)',
+            ['product_name' => 'cpev.value']
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add field filter to collection
+     *
+     * @param array|string $field
+     * @param string|int|array|null $condition
+     * @return $this
+     */
+    public function addFieldToFilter($field, $condition = null)
+    {
+        // Map product_name filter to the joined table
+        if ($field === 'product_name') {
+            $field = 'cpev.value';
+        }
+
+        return parent::addFieldToFilter($field, $condition);
+    }
 }

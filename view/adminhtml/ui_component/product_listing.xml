@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Vendor. All rights reserved.
+ * Add Product Questions column to admin product grid
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <columns name="product_columns">
+        <column name="product_questions" class="Vendor\ProductQnA\Ui\Component\Listing\Column\ProductQuestions" sortOrder="76">
+            <settings>
+                <filter>false</filter>
+                <label translate="true">Questions</label>
+                <sortable>false</sortable>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+            </settings>
+        </column>
+    </columns>
+</listing>
